@@ -1,0 +1,43 @@
+#drop_zone {
+    border: 4px dashed #A3A3A3;
+    font-size: 25px;
+    margin: 0 auto;
+    padding: 3%;
+    text-align: center;
+    width: 600px;
+}
+.main{
+	width:950px;
+	margin:0 auto;
+}
+.main>div{
+	width:450px;
+	display: inline-block;
+	left:10px;
+	border:1px solid;
+	vertical-align:top;
+}
+.btns>span{
+	background: none repeat scroll 0 0 #000000;
+    border: 1px solid;
+    border-radius: 10px;
+    color: #FFFFFF;
+    display: inline-block;
+    line-height: 2;
+    text-align: center;
+    width: 120px;
+}
+.column{
+	border:1px solid;
+	display:block;
+}
+.hide_column{
+	color:#ff0000;
+	border:1px solid;
+	display:block;
+}
+ .question:{
+ 	border: 1px solid;
+    margin: 5px;
+    text-align: center;
+}
