@@ -6,12 +6,15 @@
     text-align: center;
     width: 600px;
 }
+.btns{
+    text-align: center;
+}
 .main{
 	width:950px;
 	margin:0 auto;
 }
 .main>div{
-	width:450px;
+	width:900px;
 	display: inline-block;
 	left:10px;
 	border:1px solid;
@@ -26,6 +29,9 @@
     line-height: 2;
     text-align: center;
     width: 120px;
+}
+table{
+    display: inline-block;
 }
 .column{
 	border:1px solid;

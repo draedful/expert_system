@@ -20,7 +20,6 @@ $(document).ready(function(){
   }
 
   function handleDragOver(evt) {
-    console.log(env);
     evt.stopPropagation();
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
@@ -48,23 +47,43 @@ $(document).ready(function(){
   }
 
   function fill(result){
+    console.log('resilt = ',result)
       if(!result) return;
-      relooadTable(result.chances,result.answer);
+      relooadTableQuestions(result.questionList);
+      relooadTableAnswer(result.answer);
       document.querySelector('.question').innerHTML = "<span >"+result.question+"</span>";
   }
 
-  function relooadTable(chances,answer){
-      var table = document.querySelector('#list>table');
+
+  function relooadTableQuestions(questionList){
+      var table = document.querySelector('#questions');
       if(table.getElementsByTagName("tbody").length>0){
         var row = table.getElementsByTagName("tbody")[0]
         table.removeChild(row)
       }
-      for(var i in answer){
+      for(var i in questionList){
         var row = table.insertRow(i);
-        var style = chances[i]>0?"column":"hide_column";
-        var chance = parseFloat(chances[i]);
+        var style = questionList[i].answer<0?"column":"hide_column";
+        var answer = questionList[i].answer >= 0? questionList[i].answer == 0?"No":questionList[i].answer == 1?"Yes":"":"";
+        row.insertCell(0).innerHTML = "<span class="+style+">"+answer+"</span>";
+        row.insertCell(1).innerHTML = "<span class="+style+">"+questionList[i].question+"</span>";
+      }
+  }
+
+
+  function relooadTableAnswer(res){
+      var table = document.querySelector('#answers');
+      if(table.getElementsByTagName("tbody").length>0){
+        var row = table.getElementsByTagName("tbody")[0]
+        table.removeChild(row)
+      }
+      console.log(res);
+      for(var i in res){
+        var row = table.insertRow(i);
+        var style = res[i].chances>0?"column":"hide_column";
+        var chance = parseFloat(res[i].chances);
         row.insertCell(0).innerHTML = "<span class="+style+">"+chance.toFixed(5)+"</span>";
-        row.insertCell(1).innerHTML = "<span class="+style+">"+answer[i]+"</span>";
+        row.insertCell(1).innerHTML = "<span class="+style+">"+res[i].answer+"</span>";
       }
   }
 

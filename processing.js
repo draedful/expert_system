@@ -6,8 +6,7 @@ function Manage(text){
 		answers:[],
 		aprior:[],
 		answerQ:{},
-		apriorPlus:{},
-		apriorMinus:{},
+		questionsList:[],
 	};
 	var numberQuestions;
 	(function(){
@@ -27,15 +26,23 @@ function Manage(text){
 				continue;
 			}
 			if(iterator == 1){ // Проверка чтобы в блок questions попали только вопросытиам
-				if(textArray[i].indexOf('?') != -1) base[keysObject[iterator]].push(textArray[i]) ;
-					continue ;
+				if(textArray[i].indexOf('?') != -1){
+					//base[keysObject[iterator]].push(textArray[i]) ;
+					base.questionsList.push({
+						question:textArray[i],
+						answer:-1,
+					})
+				} 
+				continue ;
 			}	
 			answerProcessing(count,textArray[i]);
 			count++;
 
 		}
+
 		console.log(base)
 		console.groupEnd('processing');
+
 		function answerProcessing(i,answerLine){
 			console.group("answerProcessing");
 			var answer = answerLine.split(',');
@@ -60,21 +67,15 @@ function Manage(text){
 		}
 	})();
 
-	function processing(){
-
-	}
-
-	function updateInfo(){
-
-	}
-
 	function getQuestion(){
-		if(base.questions.length == 0) alert("21312");
-		numberQuestions = Math.floor(Math.random()*base.questions.length);
-		var question = base.questions[numberQuestions];
-		console.log(1,numberQuestions,base.questions);
-		base.questions.splice(numberQuestions,1);
-		console.log(2,base.questions);
+		if(base.questionsList.length == 0) alert("21312");
+
+		numberQuestions = Math.floor(Math.random()*base.questionsList.length);
+		if(base.questionsList[numberQuestions].answer > -1){
+			getQuestion();
+		}
+		var question = base.questionsList[numberQuestions].question;
+		//base.questions.splice(numberQuestions,1);
 		return question;
 	}
 	
@@ -87,6 +88,7 @@ function Manage(text){
                         (((( (base.answerQ[i][numberQuestions][0]))*base.aprior[i])) +
                          ((( base.answerQ[i][numberQuestions][1]))*(1 - base.aprior[i])));
         }
+        base.questionsList[numberQuestions].answer = 1;
         for(var i in base.aprior){
         	if(base.aprior[i] > 0){
         		console.log(base.answers[i]);
@@ -94,11 +96,7 @@ function Manage(text){
         }
         isLast();
         //console.log(base.aprior);
-		return {
-			question:getQuestion(),
-			answer:base.answers,
-			chances:base.aprior,
-		}
+		return getResult();
 	}
 
 	function clickNo(){
@@ -110,6 +108,7 @@ function Manage(text){
                         ((((1 - (base.answerQ[i][numberQuestions][0]))*base.aprior[i])) +
                          (((1 - base.answerQ[i][numberQuestions][1]))*(1 - base.aprior[i])));
         }
+        base.questionsList[numberQuestions].answer = 0;
         for(var i in base.aprior){
         	if(base.aprior[i] > 0){
         		console.log(base.answers[i]);
@@ -117,10 +116,28 @@ function Manage(text){
         }
         isLast();
         //console.log(base.aprior);
+		return getResult();
+	}
+	function getResult(){
+		
+		var answers = [];
+		for(var i in base.answers){
+			answers.push({
+				answer : base.answers[i], 
+				chances : base.aprior[i],
+ 			});
+		}
+		answers.sort(function(a,b){
+			return a.chances>=b.chances?-1:1;
+		});
+		var question = base.questionsList.sort(function(a,b){
+			return a.answer>=0?-1:1;
+		});
 		return {
+			questionList:question,
 			question:getQuestion(),
-			answer:base.answers,
-			chances:base.aprior,
+			answer:answers,
+			//chances:base.aprior,
 		}
 	}
 
@@ -139,7 +156,7 @@ function Manage(text){
 		}else if(countPlus == 0){
 			alert("Правильных ответов нет");
 			return  true;
-		}else if(countPlus>0 && base.questions.length == 0){
+		}else if(countPlus>0 && base.questionsList.length == 0){
 			base.aprior.sort(function(a,b){
 				return a>b?1:-1;
 			});
@@ -147,7 +164,7 @@ function Manage(text){
 			base.aprior.forEach(function(value,index){
 				if(value >0){
 					returnString+='или' + value;
-				}else return;
+				};
 			})
 			alert("Правильный ответ : или" + returnString);
 			return true;
@@ -157,11 +174,7 @@ function Manage(text){
 
 	function start(){
 		base.questions.splice(numberQuestions,numberQuestions+1);
-		return {
-			question:getQuestion(),
-			answer:base.answers,
-			chances:base.aprior,
-		}
+		return getResult();
 	}
 
 	return {
